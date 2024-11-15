@@ -20,17 +20,19 @@ function Genres({ onSelectGenre }) {
   }, []);
 
   return (
-    <div>
-      <h2>Select a Genre</h2>
-      {genres.map((genre) => (
-        <button
-          key={genre.id}
-          onClick={() => onSelectGenre(genre.id)}
-          style={{ margin: "5px" }}
-        >
-          {genre.name}
-        </button>
-      ))}
+    <div className="max-w-md mx-auto p-4">
+      <h2 className="text-2xl font-bold text-center mb-4">Select a Genre</h2>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        {genres.map((genre) => (
+          <button
+            key={genre.id}
+            onClick={() => onSelectGenre(genre.id)}
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none"
+          >
+            {genre.name}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

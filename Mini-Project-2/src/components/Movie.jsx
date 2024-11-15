@@ -29,25 +29,32 @@ function Movie() {
   };
 
   return (
-    <div>
-      <h1>Discover Movies by Genre</h1>
+    <div className="p-6">
+      <h1 className="text-4xl font-bold text-center mb-4">
+        Discover Movies by Genre
+      </h1>
       <Genres onSelectGenre={handleGenreSelect} />
 
-      <h2>Movies</h2>
-      <div>
+      <h2 className="text-2xl text-center mt-6">Movies</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
         {movieList.length > 0 ? (
           movieList.map((movie) => (
-            <div key={movie.id} style={{ marginBottom: "20px" }}>
+            <div
+              key={movie.id}
+              className="bg-white rounded-lg shadow-lg overflow-hidden p-4 flex flex-col items-center"
+            >
               <img
                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                 alt={movie.title}
-                style={{ width: "150px", margin: "10px" }}
+                className="w-full h-64 object-cover rounded-lg mb-4"
               />
-              <p>{movie.title}</p>
+              <p className="text-lg font-semibold">{movie.title}</p>
             </div>
           ))
         ) : (
-          <p>Select a genre to see movies!</p>
+          <p className="text-center text-gray-500">
+            Select a genre to see movies!
+          </p>
         )}
       </div>
     </div>
