@@ -1,27 +1,22 @@
 import React, { useState } from "react";
 
-function FilterByRating({ onRatingChange }) {
-  const [selectedRating, setSelectedRating] = useState("");
+function FilterByRating({ onSelectRating }) {
+  const ratings = [5, 6, 7, 8, 9]; // Define the different ratings to cycle through
+  const [currentRating, setCurrentRating] = useState(ratings[0]);
 
-  const handleRatingChange = (event) => {
-    const rating = event.target.value;
-    setSelectedRating(rating);
-    onRatingChange(rating); // Pass the selected rating to the parent
+  const handleButtonClick = () => {
+    // Get the next rating in the list
+    const nextRating =
+      ratings[(ratings.indexOf(currentRating) + 1) % ratings.length];
+    setCurrentRating(nextRating);
+    onSelectRating(nextRating); // Pass the selected rating to parent
   };
 
   return (
     <div>
-      <label htmlFor="rating">Filter by Rating: </label>
-      <input
-        type="number"
-        id="rating"
-        placeholder="Enter rating (e.g., 7.5)"
-        value={selectedRating}
-        step="0.1"
-        min="0"
-        max="10"
-        onChange={handleRatingChange}
-      />
+      <button onClick={handleButtonClick} style={{ margin: "5px" }}>
+        Next Rating: {currentRating}
+      </button>
     </div>
   );
 }

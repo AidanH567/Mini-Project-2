@@ -1,55 +1,39 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import FilterByRating from "./Rating";
 
 function Movie() {
   const [movieList, setMovieList] = useState([]);
-  const [filteredMovies, setFilteredMovies] = useState([]);
-  const [ratingFilter, setRatingFilter] = useState(null);
+  const [selectedRating, setSelectedRating] = useState(null);
 
-  const fetchMovies = async () => {
+  const fetchMoviesByRating = async (rating) => {
     try {
-      const totalPages = 5; // Number of pages you want to fetch
-      let allMovies = [];
-
-      // Fetch movies from multiple pages
-      for (let page = 1; page <= totalPages; page++) {
-        const response = await fetch(
-          `https://api.themoviedb.org/3/discover/movie?api_key=2e161d44fbfea7372bf52c8f00b986ab&page=${page}`
-        );
-        const data = await response.json();
-        allMovies = [...allMovies, ...data.results];
-      }
-
-      setMovieList(allMovies);
+      const randomPage = Math.floor(Math.random() * 500) + 1; // Random page for fetching
+      const response = await fetch(
+        `https://api.themoviedb.org/3/discover/movie?api_key=2e161d44fbfea7372bf52c8f00b986ab&vote_average.gte=${rating}&page=${randomPage}`
+      );
+      const data = await response.json();
+      setMovieList(data.results || []);
     } catch (error) {
       console.error("Error fetching movies:", error);
     }
   };
 
-  useEffect(() => {
-    fetchMovies();
-  }, []);
-
-  useEffect(() => {
-    let filtered = [...movieList];
-
-    if (ratingFilter) {
-      filtered = filtered.filter((movie) => movie.vote_average >= ratingFilter);
-    }
-
-    setFilteredMovies(filtered);
-  }, [ratingFilter, movieList]);
+  const handleRatingSelect = (rating) => {
+    setMovieList([]); // Clear existing movie list before fetching new data
+    fetchMoviesByRating(rating); // Fetch movies based on rating
+    setSelectedRating(rating); // Update selected rating
+  };
 
   return (
     <div>
-      <h1>Filter Movies by Rating</h1>
-      <FilterByRating onRatingChange={setRatingFilter} />
-
+      <h1>Discover Movies by Rating</h1>
+      <FilterByRating onSelectRating={handleRatingSelect} />{" "}
+      {/* Rating filter button */}
       <h2>Movies</h2>
       <div>
-        {filteredMovies.length > 0 ? (
-          filteredMovies.map((movie) => (
-            <div key={movie.id}>
+        {movieList.length > 0 ? (
+          movieList.map((movie) => (
+            <div key={movie.id} style={{ marginBottom: "20px" }}>
               <img
                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                 alt={movie.title}
@@ -57,11 +41,10 @@ function Movie() {
               />
               <p>{movie.title}</p>
               <p>Rating: {movie.vote_average}</p>
-              <p>Release Year: {movie.release_date.slice(0, 4)}</p>
             </div>
           ))
         ) : (
-          <p>No movies found for the selected criteria.</p>
+          <p>Select a rating to see movies!</p>
         )}
       </div>
     </div>
