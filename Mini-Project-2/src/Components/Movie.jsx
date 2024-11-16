@@ -1,40 +1,92 @@
-import React, { useState } from "react";
+import React, { useState, useReducer, useEffect } from "react";
 import Genres from "./Genres";
 import Year from "./year";
 import FilterByRating from "./Rating";
+import useFilterReducer from "../Hooks/FilterComponent";
+
+const initialState = {
+  movies: [],
+  filterQuery: "",
+  loading: false,
+  error: null,
+};
+
+function movieReducer(state, action) {
+  switch (action.type) {
+    case "SET_GENRE":
+      return {
+        ...state,
+        filterQuery: `with_genres=${action.payload}`,
+      };
+    case "SET_YEAR":
+      return {
+        ...state,
+        filterQuery: `primary_release_year=${action.payload}`,
+      };
+    case "SET_MOVIES":
+      return {
+        ...state,
+        movies: action.payload,
+        loading: false,
+        error: null,
+      };
+    //Need to do this for set_year, set_rating, set_movies (handle loading and error), set_loading, set_error
+    default:
+      return state;
+  }
+}
 
 function Movie() {
   const [movieList, setMovieList] = useState([]);
   const [filterType, setFilterType] = useState("Genre");
-  const [selectedFilter, setSelectedFilter] = useState(null);
+  const [state, dispatch] = useReducer(movieReducer, initialState);
 
-  const fetchMovies = async (filterQuery) => {
+  const fetchMovies = async () => {
+    if (!state.filterQuery) return;
+
+    dispatch({ type: "SET_LOADING", payload: true });
+
     try {
       const randomPage = Math.floor(Math.random() * 500) + 1;
       const response = await fetch(
-        `https://api.themoviedb.org/3/discover/movie?api_key=2e161d44fbfea7372bf52c8f00b986ab&${filterQuery}&page=${randomPage}`
+        `https://api.themoviedb.org/3/discover/movie?api_key=2e161d44fbfea7372bf52c8f00b986ab&${state.filterQuery}&page=${randomPage}`
       );
       const data = await response.json();
-      setMovieList(data.results || []);
+      dispatch({ type: "SET_MOVIES", payload: data.results || [] });
     } catch (error) {
+      dispatch({
+        type: "SET_ERROR",
+        payload: error.message || "something went wrong",
+      });
       console.error("Error fetching movies:", error);
     }
   };
 
-  const handleFilterSelect = (type, value) => {
-    setSelectedFilter(value);
-    let filterQuery = "";
-
-    if (type === "Genre") {
-      filterQuery = `with_genres=${value}`;
-    } else if (type === "Year") {
-      filterQuery = `primary_release_year=${value}`;
-    } else if (type === "Rating") {
-      filterQuery = `vote_average.gte=${value}`;
+  useEffect(() => {
+    if (state.filterQuery) {
+      fetchMovies();
     }
+  }, [state.filterQuery]);
 
-    fetchMovies(filterQuery);
+  const handleFilterSelect = (type, value) => {
+    dispatch({ type: `SET_${type.toUpperCase()}`, payload: value });
   };
+
+  // const handleFilterSelect = (type, value) => {
+  //   // setSelectedFilter(value);
+  //   // dispatch({ type: "", value: value });
+  //   // console.log(Genre);
+  //   // fetchMovies(Genre);
+  //   let filterQuery = "";
+  //   if (type === "Genre") {
+  //     filterQuery = `with_genres=${value}`;
+  //   } else if (type === "Year") {
+  //     filterQuery = `primary_release_year=${value}`;
+  //   } else if (type === "Rating") {
+  //     filterQuery = `vote_average.gte=${value}`;
+  //   }
+  //   fetchMovies(filterQuery);
+  // };
 
   return (
     <div className="p-6">
@@ -72,8 +124,8 @@ function Movie() {
 
       <h2 className="text-2xl text-center mb-6">Movies</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {movieList.length > 0 ? (
-          movieList.map((movie) => (
+        {state.movies.length > 0 ? (
+          state.movies.map((movie) => (
             <div
               key={movie.id}
               className="bg-white rounded-lg shadow-lg overflow-hidden p-4 flex flex-col items-center"
@@ -100,5 +152,27 @@ function Movie() {
     </div>
   );
 }
+
+// function reducer(postsResult, action) {
+//   // if (type === "Genre") {
+//   //   filterQuery = `with_genres=${value}`;
+//   // } else if (type === "Year") {
+//   //   filterQuery = `primary_release_year=${value}`;
+//   // } else if (type === "Rating") {
+//   //   filterQuery = `vote_average.gte=${value}`;
+//   // }
+
+//   switch (action.type) {
+//     case "Genre":
+//       return `with_genres=${action.value}`;
+//     case "Year":
+//       return `primary_release_year=${action.value}`;
+//     // return `Success`;
+//     case "FETCH_ERROR":
+//       return { loading: false, posts: [], error: action.payload };
+//     default:
+//       return { ...postsResult, loading: false };
+//   }
+// }
 
 export default Movie;

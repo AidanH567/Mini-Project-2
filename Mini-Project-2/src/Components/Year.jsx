@@ -3,9 +3,9 @@ import React, { useState } from "react";
 function Year({ onSelectYear }) {
   const [yearInput, setYearInput] = useState("");
 
-  const handleChange = (event) => {
-    setYearInput(event.target.value);
-  };
+  // const handleChange = (event) => {
+  //   setYearInput(event.target.value);
+  // };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -20,9 +20,9 @@ function Year({ onSelectYear }) {
       <form onSubmit={handleSubmit}>
         <input
           id="year"
-          type="text"
+          type="number"
           value={yearInput}
-          onChange={handleChange}
+          onChange={(e) => setYearInput(e.target.value)}
           placeholder="Enter a year (e.g., 2023)"
         />
         <button type="submit">Filter Movies</button>
