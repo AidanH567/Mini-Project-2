@@ -1,3 +1,4 @@
+/* Global styles are kept the same */
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -5,7 +6,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* background-color: #242424; */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -60,7 +61,7 @@ button:focus-visible {
 
 body.light {
   background-color: #ccdce4;
-  color: #c673b1;
+  color: #ec45ec;
 }
 
 body.light a {
@@ -68,11 +69,11 @@ body.light a {
 }
 
 body.light button {
-  background-color: #c673b1;
+  background-color: #f3a0f1;
 }
 
 body.light button:hover {
-  background-color: #e2e2e2;
+  background-color: #96cfd9;
 }
 
 body.dark {
@@ -89,5 +90,50 @@ body.dark button {
 }
 
 body.dark button:hover {
-  background-color: #e2dfdf;
+  background-color: #ca9af0;
+}
+
+@media (max-width: 768px) {
+  body {
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  h1 {
+    font-size: 2.4em;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  .flex {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .button-container {
+    width: 100%;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 2em;
+  }
+
+  .button-container {
+    width: 100%;
+    padding: 0.5rem;
+  }
 }

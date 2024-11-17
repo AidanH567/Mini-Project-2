@@ -3,7 +3,6 @@ import Genres from "./Genres";
 import Year from "./Year";
 import FilterByRating from "./Rating";
 
-// Create the ThemeContext
 export const ThemeContext = createContext(null);
 
 const initialState = {
@@ -56,15 +55,14 @@ function movieReducer(state, action) {
 function Movie() {
   const [filterType, setFilterType] = useState("Genre");
   const [state, dispatch] = useReducer(movieReducer, initialState);
-  const [theme, setTheme] = useState("light"); // Dark/Light theme state
+  const [theme, setTheme] = useState("light");
 
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
   };
 
-  // Update the body class based on the theme
   useEffect(() => {
-    document.body.className = theme; // Add the theme class to body
+    document.body.className = theme;
   }, [theme]);
 
   const fetchMovies = async () => {
@@ -169,7 +167,7 @@ function Movie() {
           )}
         </div>
       </div>
-    </ThemeContext.Provider> // Correctly close the context provider
+    </ThemeContext.Provider>
   );
 }
 
