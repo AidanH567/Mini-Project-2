@@ -13,7 +13,10 @@ function FilterByRating({ onSelectRating }) {
 
   return (
     <div>
-      <button onClick={handleButtonClick} style={{ margin: "5px" }}>
+      <button
+        onClick={handleButtonClick}
+        className="px-4 py-2 bg-blue-500 text-white rounded"
+      >
         Next Rating: {currentRating}
       </button>
     </div>

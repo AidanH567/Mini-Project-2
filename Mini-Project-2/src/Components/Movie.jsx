@@ -1,8 +1,7 @@
 import React, { useState, useReducer, useEffect } from "react";
 import Genres from "./Genres";
-import Year from "./year";
+import Year from "./Year";
 import FilterByRating from "./Rating";
-import useFilterReducer from "../Hooks/FilterComponent";
 
 const initialState = {
   movies: [],
@@ -23,6 +22,11 @@ function movieReducer(state, action) {
         ...state,
         filterQuery: `primary_release_year=${action.payload}`,
       };
+    case "SET_RATING":
+      return {
+        ...state,
+        filterQuery: `vote_average.gte=${action.payload}`,
+      };
     case "SET_MOVIES":
       return {
         ...state,
@@ -30,14 +34,23 @@ function movieReducer(state, action) {
         loading: false,
         error: null,
       };
-    //Need to do this for set_year, set_rating, set_movies (handle loading and error), set_loading, set_error
+    case "SET_LOADING":
+      return {
+        ...state,
+        loading: action.payload,
+      };
+    case "SET_ERROR":
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
     default:
       return state;
   }
 }
 
 function Movie() {
-  const [movieList, setMovieList] = useState([]);
   const [filterType, setFilterType] = useState("Genre");
   const [state, dispatch] = useReducer(movieReducer, initialState);
 
@@ -56,7 +69,7 @@ function Movie() {
     } catch (error) {
       dispatch({
         type: "SET_ERROR",
-        payload: error.message || "something went wrong",
+        payload: error.message || "Something went wrong",
       });
       console.error("Error fetching movies:", error);
     }
@@ -71,22 +84,6 @@ function Movie() {
   const handleFilterSelect = (type, value) => {
     dispatch({ type: `SET_${type.toUpperCase()}`, payload: value });
   };
-
-  // const handleFilterSelect = (type, value) => {
-  //   // setSelectedFilter(value);
-  //   // dispatch({ type: "", value: value });
-  //   // console.log(Genre);
-  //   // fetchMovies(Genre);
-  //   let filterQuery = "";
-  //   if (type === "Genre") {
-  //     filterQuery = `with_genres=${value}`;
-  //   } else if (type === "Year") {
-  //     filterQuery = `primary_release_year=${value}`;
-  //   } else if (type === "Rating") {
-  //     filterQuery = `vote_average.gte=${value}`;
-  //   }
-  //   fetchMovies(filterQuery);
-  // };
 
   return (
     <div className="p-6">
@@ -136,11 +133,10 @@ function Movie() {
                 className="w-full h-64 object-cover rounded-lg mb-4"
               />
               <p className="text-lg font-semibold">{movie.title}</p>
-              <p className="text-gray-500">{`Release Year: ${movie.release_date?.slice(
-                0,
-                4
-              )}`}</p>
-              <p className="text-gray-500">{`Rating: ${movie.vote_average}`}</p>
+              <p className="text-gray-500">
+                Release Year: {movie.release_date?.slice(0, 4)}
+              </p>
+              <p className="text-gray-500">Rating: {movie.vote_average}</p>
             </div>
           ))
         ) : (
@@ -152,27 +148,5 @@ function Movie() {
     </div>
   );
 }
-
-// function reducer(postsResult, action) {
-//   // if (type === "Genre") {
-//   //   filterQuery = `with_genres=${value}`;
-//   // } else if (type === "Year") {
-//   //   filterQuery = `primary_release_year=${value}`;
-//   // } else if (type === "Rating") {
-//   //   filterQuery = `vote_average.gte=${value}`;
-//   // }
-
-//   switch (action.type) {
-//     case "Genre":
-//       return `with_genres=${action.value}`;
-//     case "Year":
-//       return `primary_release_year=${action.value}`;
-//     // return `Success`;
-//     case "FETCH_ERROR":
-//       return { loading: false, posts: [], error: action.payload };
-//     default:
-//       return { ...postsResult, loading: false };
-//   }
-// }
 
 export default Movie;
