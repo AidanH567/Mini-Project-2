@@ -16,7 +16,7 @@ function Genres({ onSelectGenre }) {
       console.error("Error fetching genres:", error);
     }
   };
-
+  zA;
   useEffect(() => {
     fetchGenres();
   }, []);

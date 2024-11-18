@@ -1,7 +1,7 @@
 import React from "react";
 const date = Number(new Date().toString().slice(11, 15));
 const Year = ({ onSelectYear }) => {
-  const years = Array.from({ length: 50 }, (_, i) => date - i); // Last 50 years
+  const years = Array.from({ length: 50 }, (_, i) => date - i);
   return (
     <div>
       <select

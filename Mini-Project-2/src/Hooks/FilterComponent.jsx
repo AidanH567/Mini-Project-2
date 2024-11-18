@@ -9,17 +9,8 @@ export default function useFilterReducer() {
 }
 
 function reducer(postsResult, action) {
-  // if (type === "Genre") {
-  //   filterQuery = `with_genres=${value}`;
-  // } else if (type === "Year") {
-  //   filterQuery = `primary_release_year=${value}`;
-  // } else if (type === "Rating") {
-  //   filterQuery = `vote_average.gte=${value}`;
-  // }
-
   switch (action.type) {
     case "horror":
-      // return `with_genres=${value}`;
       return `Success`;
     case "FETCH_ERROR":
       return { loading: false, posts: [], error: action.payload };
